@@ -1,0 +1,29 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/core-build/serve.schema.json",
+  "port": 4321,
+  "https": true,
+  "serveConfigurations": {
+    "default": {
+      "pageUrl": "https://pedrommm.sharepoint.com/sites/UnilabsDemo/Doc/Forms/AllItems.aspx",
+      "customActions": {
+        "1b7f1356-b804-4ae5-b5ff-5adc393b7e23": {
+          "location": "ClientSideExtension.ListViewCommandSet.CommandBar",
+          "properties": {
+            "sampleTextOne": "One item is selected in the list"
+          }
+        }
+      }
+    },
+    "copyExtension": {
+      "pageUrl": "https://pedrommm.sharepoint.com/sites/UnilabsDemo/Doc/Forms/AllItems.aspx",
+      "customActions": {
+        "1b7f1356-b804-4ae5-b5ff-5adc393b7e23": {
+          "location": "ClientSideExtension.ListViewCommandSet.CommandBar",
+          "properties": {
+            "sampleTextOne": "One item is selected in the list"
+          }
+        }
+      }
+    }
+  }
+}
