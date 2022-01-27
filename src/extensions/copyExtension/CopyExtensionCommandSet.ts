@@ -19,6 +19,7 @@ import { HttpRequestError } from "@pnp/odata";
 import * as strings from 'CopyExtensionCommandSetStrings';
 import { IFolder } from '@pnp/sp/folders';
 import IProcessFolder from './IProcessFolder';
+import { IContextInfo } from '@pnp/sp/sites';
 
 /**
  * If your command set uses the ClientSideComponentProperties JSON input,
@@ -86,10 +87,19 @@ export default class CopyExtensionCommandSet extends BaseListViewCommandSet<ICop
          let destiny= itemConfiguration[0].destiny;
          //Obtemos o destino e origem do ficheiro
            const origemUrl = event.selectedRows[0].getValueByName("FileRef");
-            var { pathDestiny, siteUrl, pathRoot, destinationUrl } = this.builderParams(origemUrl, event, destiny);
-          //Criação e valição do processo de copia 
-         //Passo 1- criar estrura
-         this.copyProcessor(pathDestiny, siteUrl, origemUrl, pathRoot, destinationUrl);
+           sp.site.getContextInfo().then(onfulfilled =>{
+
+            if( onfulfilled.SiteFullUrl)
+            {
+              let tenantUrl=onfulfilled.SiteFullUrl.split("sites")[0];
+              console.log(onfulfilled.SiteFullUrl);
+              var { pathDestiny, siteUrl, pathRoot, destinationUrl } = this.builderParams(origemUrl, event, destiny,tenantUrl);
+              //Criação e valição do processo de copia 
+             //Passo 1- criar estrura
+             this.copyProcessor(pathDestiny, siteUrl, origemUrl, pathRoot, destinationUrl);
+            }
+        });
+         
          }
          else{
           Dialog.alert("Validar as configurações.");
@@ -99,7 +109,7 @@ export default class CopyExtensionCommandSet extends BaseListViewCommandSet<ICop
     });
       
   }
-  private builderParams(origemUrl: any, event: IListViewCommandSetExecuteEventParameters, destiny: any) {
+  private builderParams(origemUrl: any, event: IListViewCommandSetExecuteEventParameters, destiny: any,tenantUrl:any) {
     let paths = origemUrl.split('/');
     let pathDestiny = "";
     let pathsDestinity = "";
@@ -115,10 +125,13 @@ export default class CopyExtensionCommandSet extends BaseListViewCommandSet<ICop
     if (pathDestiny=="") {
       destinationUrl = `/sites/${destiny}/Shared Documents/${filename}`;
     }
-    const destinationUrlFolder = `/sites/${destiny}`;
+    const destinationUrlFolder = `sites/${destiny}`;
     const pathRoot = `${pathDestiny}`;
     //Construção do url do Site de destino
-    let tenant = "https://pedrommm.sharepoint.com";
+   
+
+    debugger;
+    let tenant =tenantUrl;
     let siteUrl = `${tenant}${destinationUrlFolder}`;
     return { pathDestiny, siteUrl, pathRoot, destinationUrl };
   }
